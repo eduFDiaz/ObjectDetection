@@ -1,42 +1,14 @@
-﻿using Alturos.Yolo;
-using Alturos.Yolo.Model;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
+﻿using System;
 using System.Drawing;
 using System.Drawing.Imaging;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 
-namespace ObjectDetection
+namespace ConsoleApp
 {
-    public partial class Form1 : Form
+    class Program
     {
-        public Form1()
+        static void Main(string[] args)
         {
-            InitializeComponent();
-        }
-
-        private void Form1_Load(object sender, EventArgs e)
-        {
-
-        }
-
-        private void button1_Click(object sender, EventArgs e)
-        {
-            var fileD = new OpenFileDialog();
-            fileD.Filter = "Image Files|*.jpg;*.png";
-            if (fileD.ShowDialog() == DialogResult.OK)
-            {
-                img.Image = Image.FromFile(fileD.FileName);
-            }
-        }
-
-        private void button2_Click(object sender, EventArgs e)
-        {
+            img.Image = Image.FromFile(fileD.FileName);
             var detectorConf = new ConfigurationDetector();
             var conf = detectorConf.Detect();
             var yolo = new YoloWrapper(conf);
@@ -45,6 +17,7 @@ namespace ObjectDetection
             var _items = yolo.Detect(memStream.ToArray()).ToList();
             AddBoxes(img, _items);
         }
+
         void AddBoxes(PictureBox box, List<YoloItem> items)
         {
             var img = box.Image;
@@ -61,13 +34,14 @@ namespace ObjectDetection
                 var height = item.Height;
 
                 var rect = new Rectangle(x, y, width, height);
-                var pen = new Pen(Color.LightBlue,6);
-                var point = new Point(x , y);
+                var pen = new Pen(Color.LightBlue, 6);
+                var point = new Point(x, y);
 
-                graphics.DrawRectangle(pen,rect);
+                graphics.DrawRectangle(pen, rect);
                 graphics.DrawString(item.Type, font, brush, point);
             }
             box.Image = img;
+            Console.WriteLine("Hello World!");
         }
     }
 }
