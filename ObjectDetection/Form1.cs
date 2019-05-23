@@ -62,11 +62,20 @@ namespace ObjectDetection
                 var height = item.Height;
 
                 var rect = new Rectangle(x, y, width, height);
-                var pen = new Pen(Color.Blue,6);
-                var point = new Point(x , y);
+                var pen = new Pen(Color.Blue,4);
 
                 graphics.DrawRectangle(pen,rect);
-                graphics.DrawString(item.Type, font, brush, point);
+
+                //Label Box
+                var labelfont = new Font("Arial", 16, FontStyle.Bold);
+                var labelbrush = new SolidBrush(Color.Black);
+                SizeF stringSize = new SizeF();
+                stringSize = graphics.MeasureString(item.Type, labelfont);
+                // Draw rectangle representing size of string.
+                graphics.DrawRectangle(new Pen(Color.Blue, 2), x, y - 26 , stringSize.Width, stringSize.Height);
+                graphics.FillRectangle(Brushes.Blue, x, y - stringSize.Height - 2, stringSize.Width, stringSize.Height);
+                // Draw string to screen.
+                graphics.DrawString(item.Type, labelfont, Brushes.Black, new PointF(x, y - stringSize.Height -2));
             }
             box.Image = img;
         }
