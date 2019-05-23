@@ -15,6 +15,10 @@ namespace ObjectDetection
 {
     public partial class Form1 : Form
     {
+        YoloWrapper yoloWrapper = new
+        YoloWrapper("yolov3/yolov3.cfg", "yolov3/yolov3.weights", "yolov3/names.coco");
+        //YoloWrapper("yolov2/yolov2-tiny-voc.cfg", "yolov2/yolov2-tiny-voc.weights", "yolov2/voc.names");
+
         public Form1()
         {
             InitializeComponent();
@@ -37,12 +41,9 @@ namespace ObjectDetection
 
         private void button2_Click(object sender, EventArgs e)
         {
-            var detectorConf = new ConfigurationDetector();
-            var conf = detectorConf.Detect();
-            var yolo = new YoloWrapper(conf);
             var memStream = new System.IO.MemoryStream();
             img.Image.Save(memStream, ImageFormat.Png);
-            var _items = yolo.Detect(memStream.ToArray()).ToList();
+            var _items = this.yoloWrapper.Detect(memStream.ToArray()).ToList();
             AddBoxes(img, _items);
         }
         void AddBoxes(PictureBox box, List<YoloItem> items)
@@ -50,7 +51,7 @@ namespace ObjectDetection
             var img = box.Image;
 
             var font = new Font("Arial", 30, FontStyle.Bold);
-            var brush = new SolidBrush(Color.LightGreen);
+            var brush = new SolidBrush(Color.Blue);
 
             var graphics = Graphics.FromImage(img);
             foreach (var item in items)
@@ -61,7 +62,7 @@ namespace ObjectDetection
                 var height = item.Height;
 
                 var rect = new Rectangle(x, y, width, height);
-                var pen = new Pen(Color.LightBlue,6);
+                var pen = new Pen(Color.Blue,6);
                 var point = new Point(x , y);
 
                 graphics.DrawRectangle(pen,rect);
