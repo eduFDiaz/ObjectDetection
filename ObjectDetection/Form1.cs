@@ -16,7 +16,8 @@ namespace ObjectDetection
     public partial class Form1 : Form
     {
         YoloWrapper yoloWrapper = new
-        YoloWrapper("yolov3/yolov3.cfg", "yolov3/yolov3.weights", "yolov3/names.coco");
+        YoloWrapper("yolov3/yolov3.cfg", "yolov3/yolov3.weights", "yolov3/coco.names");
+        //YoloWrapper("yolov3-tiny/yolov3-tiny.cfg", "yolov3-tiny/yolov3.weights", "yolov3-tiny/coco.names");
         //YoloWrapper("yolov2/yolov2-tiny-voc.cfg", "yolov2/yolov2-tiny-voc.weights", "yolov2/voc.names");
 
         public Form1()
@@ -49,8 +50,6 @@ namespace ObjectDetection
         void AddBoxes(PictureBox box, List<YoloItem> items)
         {
             var img = box.Image;
-
-            var font = new Font("Arial", 30, FontStyle.Bold);
             var brush = new SolidBrush(Color.Blue);
 
             var graphics = Graphics.FromImage(img);
@@ -67,15 +66,15 @@ namespace ObjectDetection
                 graphics.DrawRectangle(pen,rect);
 
                 //Label Box
-                var labelfont = new Font("Arial", 16, FontStyle.Bold);
-                var labelbrush = new SolidBrush(Color.Black);
+                var labelfont = new Font("Arial", 20, FontStyle.Bold);
+
                 SizeF stringSize = new SizeF();
                 stringSize = graphics.MeasureString(item.Type, labelfont);
                 // Draw rectangle representing size of string.
-                graphics.DrawRectangle(new Pen(Color.Blue, 2), x, y - 26 , stringSize.Width, stringSize.Height);
+                graphics.DrawRectangle(new Pen(Color.Blue, 2), x, y - stringSize.Height - 2, stringSize.Width, stringSize.Height);
                 graphics.FillRectangle(Brushes.Blue, x, y - stringSize.Height - 2, stringSize.Width, stringSize.Height);
                 // Draw string to screen.
-                graphics.DrawString(item.Type, labelfont, Brushes.Black, new PointF(x, y - stringSize.Height -2));
+                graphics.DrawString(item.Type, labelfont, Brushes.White, new PointF(x, y - stringSize.Height -2));
             }
             box.Image = img;
         }
