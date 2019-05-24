@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.Collections.Generic;
 using System.Text;
@@ -18,27 +19,31 @@ namespace AspObjectDetection.Controllers
     [Route("api/[controller]")]
     public class ImageController : ControllerBase
     {
+        YoloWrapper yoloWrapper = new
+        YoloWrapper("yolov3/yolov3.cfg", "yolov3/yolov3.weights", "yolov3/coco.names");
+        //YoloWrapper("yolov3-tiny/yolov3-tiny.cfg", "yolov3-tiny/yolov3.weights", "yolov3-tiny/coco.names");
+        //YoloWrapper("yolov2/yolov2-tiny-voc.cfg", "yolov2/yolov2-tiny-voc.weights", "yolov2/voc.names");
+
         [HttpPost("[action]")]
-        public ActionResult Upload([FromForm] IFormFile image)
+        public String Upload([FromForm] IFormFile image)
         {
             try
             {
-                //var configurationDetector = new ConfigurationDetector();
-                //var config = configurationDetector.Detect();
-                //var yoloWrapper = new YoloWrapper(config);
-                //var items = yoloWrapper.Detect(image.ToString());
-                using (var yoloWrapper = new YoloWrapper("yolov2-tiny-voc.cfg", "yolov2-tiny-voc.weights", "voc.names"))
+                using (var target = new MemoryStream())
                 {
-                    var items = yoloWrapper.Detect(image.ToString());
-                    //string output = JsonConvert.SerializeObject(items);
-                    //return Content(JsonConvert.SerializeObject(items));
+                    image.CopyTo(target);
+                    var _items = this.yoloWrapper.Detect(target.ToArray()).ToList();
+                    return _items.ToString();
                 }
+                
                 //string output = JsonConvert.SerializeObject(items);
-                return Content("not");
+                //return Content(JsonConvert.SerializeObject(items));
+
+                //string output = JsonConvert.SerializeObject(items);
             }
             catch (Exception e)
             {
-                return Content("{0} Exception caught.", e.ToString());
+                return Content("{0} Exception caught.", e.ToString()).ToString();
             }
         }
     }
